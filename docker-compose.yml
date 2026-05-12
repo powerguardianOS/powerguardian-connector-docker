@@ -2,9 +2,11 @@ services:
   powerguardian-connector:
     image: ghcr.io/powerguardianos/powerguardian-connector-docker:latest
     network_mode: host
+    privileged: true
     volumes:
       - ./data:/data
       - /etc/nut:/etc/nut
+      - /var/run/nut:/var/run/nut
     devices:
       - /dev/bus/usb:/dev/bus/usb
     environment:

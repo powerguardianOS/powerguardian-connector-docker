@@ -20,11 +20,18 @@ RUN GOOS=linux \
 # ── Stage 2: runtime ──────────────────────────────────────────────────────────
 FROM debian:bookworm-slim
 
+# nut-server includes: nut-scanner, upsdrvctl, upsd
+# nut-client includes: upsc, upscmd, upsmon
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         wget \
+        curl \
+        nut \
+        nut-server \
         nut-client \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /etc/nut /var/run/nut /var/state/ups \
+    && chown -R root:nut /etc/nut /var/run/nut /var/state/ups 2>/dev/null || true
 
 WORKDIR /app
 COPY --from=builder /pg-connector .
