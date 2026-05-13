@@ -35,6 +35,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 COPY --from=builder /pg-connector .
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 ENV PG_CONTROLLER_URL=""
 ENV PG_AGENT_KEY=""
@@ -45,4 +47,4 @@ EXPOSE 8090
 
 VOLUME /data
 
-CMD ["./pg-connector"]
+ENTRYPOINT ["/entrypoint.sh"]
