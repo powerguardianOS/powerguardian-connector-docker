@@ -5,8 +5,8 @@ services:
     privileged: true
     volumes:
       - ./data:/data
-      - /etc/nut:/etc/nut
-      - /var/run/nut:/var/run/nut
+      - nut-etc:/etc/nut
+      - nut-run:/var/run/nut
     devices:
       - /dev/bus/usb:/dev/bus/usb
     environment:
@@ -19,3 +19,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     restart: unless-stopped
+
+volumes:
+  nut-etc:
+  nut-run:
