@@ -18,8 +18,6 @@ if [ ! -f /etc/nut/upsd.conf ]; then
 fi
 
 # Create /etc/nut/upsd.users if missing
-# upsmon user: monitors the UPS (used by upsmon daemon)
-# admin user: used by pg-connector TCP client for INSTCMD/SET
 if [ ! -f /etc/nut/upsd.users ]; then
   cat > /etc/nut/upsd.users <<'EOF'
 [upsmon]
@@ -34,5 +32,15 @@ EOF
   chmod 640 /etc/nut/upsd.users
   chown root:nut /etc/nut/upsd.users 2>/dev/null || true
 fi
+
+# Start UPS driver(s) only if ups.conf exists and contains driver entries
+if [ -f /etc/nut/ups.conf ]; then
+  if grep -q '^driver' /etc/nut/ups.conf 2>/dev/null; then
+    upsdrvctl start
+  fi
+fi
+
+# Start upsd (required for pg-connector to communicate with UPS)
+upsd
 
 exec ./pg-connector
