@@ -1,7 +1,6 @@
 services:
   powerguardian-connector:
     image: ghcr.io/powerguardianos/connectoros-docker:latest
-    container_name: powerguardian-connector
     network_mode: host
     privileged: true
     volumes:
