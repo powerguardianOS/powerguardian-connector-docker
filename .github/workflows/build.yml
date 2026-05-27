@@ -21,7 +21,7 @@ jobs:
           repository: powerguardianOS/powerguardian-connector-os
           token: ${{ secrets.DISPATCH_TOKEN }}
           path: connector-os
-          ref: ${{ github.event.client_payload.sha || 'main' }}
+          ref: ${{ github.event.client_payload.sha || 'master' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
