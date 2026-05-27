@@ -1,6 +1,7 @@
 services:
   powerguardian-connector:
     image: ghcr.io/powerguardianos/connectoros-docker:latest
+    container_name: powerguardian-connector
     network_mode: host
     privileged: true
     volumes:
@@ -12,12 +13,8 @@ services:
     environment:
       - PG_DATA_DIR=/data
       - PG_AGENT_KEY=
-      - PG_WATCHTOWER_URL=http://localhost:9000
-      - PG_WATCHTOWER_TOKEN=pg-update-token
     extra_hosts:
       - "powerguardian.local:10.0.0.40"
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
     restart: unless-stopped
 
 volumes:
