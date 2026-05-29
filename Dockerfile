@@ -38,7 +38,16 @@ COPY --from=builder /pg-connector .
 COPY nut/ /app/nut-defaults/
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
-    && chmod 640 /app/nut-defaults/upsd.users /app/nut-defaults/upsmon.conf
+    && chmod 640 /app/nut-defaults/upsd.users /app/nut-defaults/upsmon.conf \
+    # Overwrite apt-generated NUT configs with our defaults so the named
+    # volume is seeded correctly on first Docker run (apt sets MODE=none).
+    && cp /app/nut-defaults/nut.conf     /etc/nut/nut.conf \
+    && cp /app/nut-defaults/ups.conf     /etc/nut/ups.conf \
+    && cp /app/nut-defaults/upsd.conf    /etc/nut/upsd.conf \
+    && cp /app/nut-defaults/upsd.users   /etc/nut/upsd.users \
+    && cp /app/nut-defaults/upsmon.conf  /etc/nut/upsmon.conf \
+    && chown root:nut /etc/nut/upsd.users /etc/nut/upsmon.conf \
+    && chmod 640 /etc/nut/upsd.users /etc/nut/upsmon.conf
 
 ENV PG_CONTROLLER_URL=""
 ENV PG_AGENT_KEY=""
