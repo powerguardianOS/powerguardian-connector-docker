@@ -20,13 +20,15 @@ chmod 640 "$NUT_DIR/upsd.users" "$NUT_DIR/upsmon.conf" 2>/dev/null || true
 # Clean up stale PID files from previous container runs
 rm -f /var/run/nut/*.pid 2>/dev/null || true
 
-# Start NUT driver
+# Start NUT driver (soft failure — UPS may not be connected yet)
 echo "[pg] Starting NUT driver..."
 upsdrvctl start 2>&1 | sed 's/^/[pg-nut] /' || echo "[pg] Warning: upsdrvctl failed (no UPS connected yet)"
 
-# Start NUT data server
+# Start NUT data server in background (-F foreground, & background)
+# upsd must start even if no driver loaded — connector polls it independently
 echo "[pg] Starting upsd..."
-upsd 2>&1 | sed 's/^/[pg-upsd] /' || echo "[pg] Warning: upsd failed to start"
+upsd -F 2>&1 | sed 's/^/[pg-upsd] /' &
+sleep 2
 
 sleep 1
 
