@@ -24,13 +24,10 @@ rm -f /var/run/nut/*.pid 2>/dev/null || true
 echo "[pg] Starting NUT driver..."
 upsdrvctl start 2>&1 | sed 's/^/[pg-nut] /' || echo "[pg] Warning: upsdrvctl failed (no UPS connected yet)"
 
-# Start NUT data server in background (-F foreground, & background)
-# upsd must start even if no driver loaded — connector polls it independently
+# Start NUT data server — let it daemonize normally
 echo "[pg] Starting upsd..."
-upsd -F 2>&1 | sed 's/^/[pg-upsd] /' &
+upsd 2>&1 && echo "[pg] upsd started" || echo "[pg] Warning: upsd failed to start"
 sleep 2
-
-sleep 1
 
 # Start upsmon
 echo "[pg] Starting upsmon..."
