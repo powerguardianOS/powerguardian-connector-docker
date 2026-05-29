@@ -35,8 +35,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 COPY --from=builder /pg-connector .
+COPY nut/ /app/nut-defaults/
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh \
+    && chmod 640 /app/nut-defaults/upsd.users /app/nut-defaults/upsmon.conf
 
 ENV PG_CONTROLLER_URL=""
 ENV PG_AGENT_KEY=""

@@ -1,0 +1,8 @@
+[upsmon]
+    password = pgmonitor
+    upsmon primary
+
+[admin]
+    password = pgconnector
+    actions = SET
+    instcmds = ALL
