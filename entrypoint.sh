@@ -30,6 +30,30 @@ EOF
   chown root:nut /etc/nut/upsd.users 2>/dev/null || true
 fi
 
+if [ ! -f /etc/nut/ups.conf ]; then
+  cat > /etc/nut/ups.conf <<'EOF'
+[ups]
+    driver = usbhid-ups
+    port = auto
+    desc = "UPS via USB"
+EOF
+fi
+
+if [ ! -f /etc/nut/upsmon.conf ]; then
+  cat > /etc/nut/upsmon.conf <<'EOF'
+MONITOR ups@localhost 1 upsmon pgmonitor primary
+SHUTDOWNCMD "/sbin/shutdown -h +0"
+POWERDOWNFLAG /etc/killpower
+POLLFREQ 5
+POLLFREQALERT 5
+HOSTSYNC 15
+DEADTIME 15
+MINSUPPLIES 1
+EOF
+  chmod 640 /etc/nut/upsmon.conf
+  chown root:nut /etc/nut/upsmon.conf 2>/dev/null || true
+fi
+
 # Clean up stale PID files from previous container runs
 rm -f /var/run/nut/*.pid 2>/dev/null || true
 
