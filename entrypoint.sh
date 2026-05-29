@@ -30,14 +30,25 @@ EOF
   chown root:nut /etc/nut/upsd.users 2>/dev/null || true
 fi
 
-# Start UPS drivers if ups.conf exists with driver entries
-if [ -f /etc/nut/ups.conf ]; then
-  if grep -q '^driver' /etc/nut/ups.conf 2>/dev/null; then
-    upsdrvctl start || true
-  fi
+# Clean up stale PID files from previous container runs
+rm -f /var/run/nut/*.pid 2>/dev/null || true
+
+# Start UPS driver (only if ups.conf has a driver entry)
+if [ -f /etc/nut/ups.conf ] && grep -q '^driver' /etc/nut/ups.conf 2>/dev/null; then
+  echo "[pg] Starting NUT driver..."
+  upsdrvctl start 2>&1 | sed 's/^/[pg-nut] /' || echo "[pg] Warning: upsdrvctl failed (no UPS connected yet)"
 fi
 
 # Start upsd — allow failure before adoption (no ups.conf yet)
-upsd || true
+echo "[pg] Starting upsd..."
+upsd 2>&1 | sed 's/^/[pg-upsd] /' || echo "[pg] Warning: upsd failed to start"
+
+sleep 1
+
+# Start upsmon (notifies on status changes, runs shutdown script)
+echo "[pg] Starting upsmon..."
+upsmon 2>&1 | sed 's/^/[pg-upsmon] /' || echo "[pg] Warning: upsmon failed (no UPS connected yet)"
+
+echo "[pg] Starting PowerGuardian Connector..."
 
 exec ./pg-connector
