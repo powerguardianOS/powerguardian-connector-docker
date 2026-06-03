@@ -7,7 +7,6 @@ services:
     volumes:
       - ./data:/data
       - nut-etc:/etc/nut
-      - nut-run:/var/run/nut
     devices:
       - /dev/bus/usb:/dev/bus/usb
     environment:
@@ -18,4 +17,3 @@ services:
 
 volumes:
   nut-etc:
-  nut-run:
