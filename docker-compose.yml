@@ -12,9 +12,8 @@ services:
       - /dev/bus/usb:/dev/bus/usb
     environment:
       - PG_DATA_DIR=/data
-      - PG_AGENT_KEY=
-    extra_hosts:
-      - "powerguardian.local:10.0.0.40"
+      - PG_CONTROLLER_URL=${PG_CONTROLLER_URL:-}
+      - PG_AGENT_KEY=${PG_AGENT_KEY:-}
     restart: unless-stopped
 
 volumes:
