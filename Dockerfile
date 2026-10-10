@@ -3,7 +3,7 @@
 # Supported platforms: linux/arm/v7  linux/amd64  linux/arm64
 
 # ── Stage 1: build ────────────────────────────────────────────────────────────
-FROM --platform=$BUILDPLATFORM golang:1.25-bookworm AS builder
+FROM --platform=$BUILDPLATFORM golang:1.26-bookworm AS builder
 
 ARG TARGETARCH
 ARG TARGETVARIANT
